@@ -25,19 +25,19 @@ delete_old_manifest () {
 }
 
 generate_m3u8_manifest () {
-    echo "#EXTM3U">>$M3U8_MANIFEST
-    echo "#EXTINF:$VIDEO_ID">>$M3U8_MANIFEST
-    echo ''>>$M3U8_MANIFEST
+    echo "#EXTM3U">>${M3U8_MANIFEST}
+    echo "#EXTINF:$VIDEO_ID">>${M3U8_MANIFEST}
+    echo ''>>${M3U8_MANIFEST}
     for f in  $VIDEO_DIR/$VIDEO_ID_*k_mobile_s.mp4
     do
 	fr=$(get_file_name "$f")
 	br=$(get_bitrate "$fr")
 	resolution=$(get_param $f "ImageHeight")x$(get_param $f "ImageWidth")
 	br_i=$((1000*(${br%k}-32)))
-	echo "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=$br_i,RESOLUTION=$resolution">>$M3U8_MANIFEST
-	echo "">>$M3U8_MANIFEST
-	echo "/hls-vod/$APP_NAME/$fr.m3u8">>$M3U8_MANIFEST
-	echo "">>$M3U8_MANIFEST
+	echo "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=$br_i,RESOLUTION=$resolution">>${M3U8_MANIFEST}
+	echo "">>${M3U8_MANIFEST}
+	echo "/hls-vod/$APP_NAME/$fr.m3u8">>${M3U8_MANIFEST}
+	echo "">>${M3U8_MANIFEST}
     done
 }
 
@@ -90,7 +90,7 @@ F4M_MANIFEST=$VIDEO_DIR/"$VIDEO_ID"_"$F4M"
 BASE_URL_HDS=rtmp://$VIDEO_SERVER_NAME/hds_vod/$APP_NAME
 
 #generate hls manifest file- extention u8m3
-delete_old_manifest $M3U8_MANIFEST
+delete_old_manifest ${M3U8_MANIFEST}
 generate_m3u8_manifest
 
 #generates hds manifest file - extention m4p
