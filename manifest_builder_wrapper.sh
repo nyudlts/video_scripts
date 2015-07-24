@@ -4,14 +4,21 @@
 #
 # Wrapper script for video_manifest_builder.sh 
 #
+#------------------------------------------------------------------------------
+# determine script path
+SCRIPT_DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$SCRIPT_DIR" ]]; then SCRIPT_DIR="$PWD"; fi
+
+readonly CONFIG_FILE="${SCRIPT_DIR}/builder_config.cfg"
+
 echo "Reading config...." >&2
          
-if [[ ! -f builder_config.cfg ]]; then
+if [[ ! -f ${CONFIG_FILE} ]]; then
  echo "Config file builder_config.cfg doesn't exist. Please provide one" 
  exit 1 
 fi
              
-source builder_config.cfg
+source "${CONFIG_FILE}"
 
 if [[ ! -d $SOURCE_DIR ]]; then
  echo "SOURCE_DIR:$SOURCE_DIR doesn't exist."  
