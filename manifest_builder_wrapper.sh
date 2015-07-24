@@ -16,7 +16,7 @@ readonly MANIFEST_SCRIPT="${SCRIPT_DIR}/video_manifest_builder.sh"
 
 echo "Reading config...." >&2
          
-if [[ ! -f ${CONFIG_FILE} ]]; then
+if [[ ! -f "${CONFIG_FILE}" ]]; then
  echo "Config file builder_config.cfg doesn't exist. Please provide one" 
  exit 1 
 fi
@@ -31,19 +31,20 @@ fi
 declare -a VIDEOS
 
 if [[ $# -gt 0 ]]; then
-        if [[ ! -f $1 ]]; then
+        if [[ ! -f "$1" ]]; then
            echo "file $1 doesn't exist. Please check your path "
            exit 1
         fi
-	readarray -t VIDEOS < $1
+	readarray -t VIDEOS < "$1"
 else
-	VIDEOS=$(ls $SOURCE_DIR | sort)
+	VIDEOS=$(ls "$SOURCE_DIR" | sort)
 fi
 
 for video in $VIDEOS
 do
 	echo "Processing ${video}"
-	${MANIFEST_SCRIPT} "${video}"
+	video_dir="${SOURCE_DIR}/${video}/${VIDEO_SUB_DIR}"
+	${MANIFEST_SCRIPT} "${video}" "${video_dir}" "${PARTNER_CODE}" "${COLLECTION_CODE}"
 	retval=$?
 	if [[ "${retval}" -eq 0 ]]; then
 		status='PASS'
