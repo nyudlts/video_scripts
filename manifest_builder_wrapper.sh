@@ -35,12 +35,14 @@ if [[ $# -gt 0 ]]; then
            echo "file $1 doesn't exist. Please check your path "
            exit 1
         fi
-	readarray -t VIDEOS < "$1"
+	readarray -t VIDEOS < $1
 else
-	VIDEOS=$(ls "$SOURCE_DIR" | sort)
+	VIDEOS=($(ls "$SOURCE_DIR" | sort))
 fi
 
-for video in $VIDEOS
+echo "${VIDEOS[@]}"
+
+for video in "${VIDEOS[@]}"
 do
 	echo "Processing ${video}"
 	video_dir="${SOURCE_DIR}/${video}/${VIDEO_SUB_DIR}"
