@@ -4,7 +4,6 @@
 
 readonly REQUIRED_ARGUMENT_COUNT=4
 readonly VIDEO_SERVER_NAME=ams.library.nyu.edu
-SOURCE_DIR=/content/prod/rstar/content/tamwag/tam616/wip/se
 readonly M3U8=manifest.m3u8
 readonly F4M=manifest_rtmp.f4m
 
@@ -86,19 +85,6 @@ PARTNER_CODE="$3"
 COLLECTION_CODE="$4"
 APP_NAME="${PARTNER_CODE}_${COLLECTION_CODE}"
 
-echo "Reading config...." >&2
-if [ ! -f builder_config.cfg ]; then
-    echo "Config file builder_config.cfg doesn't exist. Please provide one" 
-    exit 1
-fi
-source builder_config.cfg
-
-if [ ! -d $SOURCE_DIR ]; then
-    echo "SOURCE_DIR:$SOURCE_DIR doesn't exist." 
-    exit 1
-fi
-
-VIDEO_DIR=$SOURCE_DIR/${VIDEO_ID}/aux
 if [ ! -d ${VIDEO_DIR} ]; then
     echo "VIDEO_DIR:${VIDEO_DIR} doesn't exist." 
     exit 1
