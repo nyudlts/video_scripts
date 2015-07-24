@@ -40,11 +40,9 @@ else
 	VIDEOS=($(ls "$SOURCE_DIR" | sort))
 fi
 
-echo "${VIDEOS[@]}"
-
 for video in "${VIDEOS[@]}"
 do
-	echo "Processing ${video}"
+	printf "Processing ${video} : "
 	video_dir="${SOURCE_DIR}/${video}/${VIDEO_SUB_DIR}"
 	${MANIFEST_SCRIPT} "${video}" "${video_dir}" "${PARTNER_CODE}" "${COLLECTION_CODE}"
 	retval=$?
@@ -54,7 +52,7 @@ do
 		status='FAIL'
 		global_status=1
 	fi
-	echo "${video}: ${status}"
+	echo "${status}"
 done
 
 exit "$global_status"
