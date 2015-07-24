@@ -2,6 +2,17 @@
 
 ## The script is used to generate manifest files for dynamic streaming of DLTS video. generates manifest files for hls (mobile) and hds streaming.Use filename as a parameter.   
 
+readonly REQUIRED_ARGUMENT_COUNT=4
+
+print_error () {
+    echo "ERROR: $@" >&2
+}
+
+print_usage () {
+    echo "usage: $0 <video id> <video dir> <partner code> <collection code>"
+    echo " e.g.: $0 231_0710 /content/prod/rstar/content/fales/gcn/wip/se/231_0710/aux fales gcn"
+}
+
 #read and check parameters
 get_param () {
     local param=`exiftool -"$2" -b -n $1 `
@@ -60,13 +71,16 @@ generate_f4m_manifest () {
 }
 
 #read and validate parameters
-if [ $# -eq 0 ]; then
-    echo "No arguments supplied. Please provide video id"
+if [ "$#" -ne ${REQUIRED_ARGUMENT_COUNT} ]; then
+    print_error "incorrect argument count"
+    print_usage
     exit 1
 fi
 VIDEO_ID="$1"
 VIDEO_DIR="$2"
-APP_NAME="$3"
+PARTNER_CODE="$3"
+COLLECTION_CODE="$4"
+APP_NAME="${PARTNER_CODE}_${COLLECTION_CODE}"
 
 echo "Reading config...." >&2
 if [ ! -f builder_config.cfg ]; then
