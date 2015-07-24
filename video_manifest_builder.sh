@@ -18,7 +18,7 @@ print_usage () {
 
 #read and check parameters
 get_param () {
-    local param=`exiftool -"$2" -b -n $1 `
+    local param=$(exiftool -"$2" -b -n "$1")
     echo "$param"
 }
 
@@ -28,7 +28,7 @@ get_file_name () {
 }
 
 get_bitrate () {
-    local bitrate=`echo $1 | awk -F_ '{ print $3 }'`
+    local bitrate=$(echo $1 | awk -F_ '{ print $3 }')
     echo "$bitrate"
 }
 
