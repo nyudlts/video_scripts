@@ -10,6 +10,7 @@ SCRIPT_DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$SCRIPT_DIR" ]]; then SCRIPT_DIR="$PWD"; fi
 
 readonly CONFIG_FILE="${SCRIPT_DIR}/builder_config.cfg"
+readonly MANIFEST_SCRIPT="${SCRIPT_DIR}/video_manifest_builder.sh"
 
 echo "Reading config...." >&2
          
@@ -20,8 +21,8 @@ fi
              
 source "${CONFIG_FILE}"
 
-if [[ ! -d $SOURCE_DIR ]]; then
- echo "SOURCE_DIR:$SOURCE_DIR doesn't exist."  
+if [[ ! -d "${SOURCE_DIR}" ]]; then
+ echo "SOURCE_DIR:${SOURCE_DIR} doesn't exist."  
  exit 1
 fi  
 
@@ -34,19 +35,19 @@ if [[ $# -gt 0 ]]; then
         fi
 	readarray -t VIDEOS < $1
 else
-	VIDEOS=`ls $SOURCE_DIR | sort`
+	VIDEOS=$(ls $SOURCE_DIR | sort)
 fi
 
 for VIDEO in $VIDEOS
 do
-	echo Processing $VIDEO
-	./video_manifest_builder.sh $VIDEO 
+	echo "Processing ${VIDEO}"
+	${MANIFEST_SCRIPT} "${VIDEO}"
 	RETVAL=$?
-	if [[ $RETVAL -eq 0 ]]; then
+	if [[ "${RETVAL}" -eq 0 ]]; then
 		STATUS=PASS
 	else
 		STATUS=FAIL
 	fi
-	echo "$VIDEO: $STATUS"
+	echo "$VIDEO: ${STATUS}"
 done
 
