@@ -46,12 +46,12 @@ do
 	${MANIFEST_SCRIPT} "${video}"
 	retval=$?
 	if [[ "${retval}" -eq 0 ]]; then
-		status=PASS
+		status='PASS'
 	else
-		status=FAIL
+		status='FAIL'
 		global_status=1
 	fi
-	echo "$video: ${status}"
+	echo "${video}: ${status}"
 done
 
 exit "$global_status"
