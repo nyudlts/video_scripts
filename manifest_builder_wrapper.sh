@@ -40,18 +40,18 @@ else
 	VIDEOS=$(ls $SOURCE_DIR | sort)
 fi
 
-for VIDEO in $VIDEOS
+for video in $VIDEOS
 do
-	echo "Processing ${VIDEO}"
-	${MANIFEST_SCRIPT} "${VIDEO}"
-	RETVAL=$?
-	if [[ "${RETVAL}" -eq 0 ]]; then
-		STATUS=PASS
+	echo "Processing ${video}"
+	${MANIFEST_SCRIPT} "${video}"
+	retval=$?
+	if [[ "${retval}" -eq 0 ]]; then
+		status=PASS
 	else
-		STATUS=FAIL
+		status=FAIL
 		global_status=1
 	fi
-	echo "$VIDEO: ${STATUS}"
+	echo "$video: ${status}"
 done
 
 exit "$global_status"
