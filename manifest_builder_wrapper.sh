@@ -5,6 +5,8 @@
 # Wrapper script for video_manifest_builder.sh 
 #
 #------------------------------------------------------------------------------
+global_status=0
+
 # determine script path
 SCRIPT_DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$SCRIPT_DIR" ]]; then SCRIPT_DIR="$PWD"; fi
@@ -47,7 +49,9 @@ do
 		STATUS=PASS
 	else
 		STATUS=FAIL
+		global_status=1
 	fi
 	echo "$VIDEO: ${STATUS}"
 done
 
+exit "$global_status"
