@@ -3,6 +3,10 @@
 ## The script is used to generate manifest files for dynamic streaming of DLTS video. generates manifest files for hls (mobile) and hds streaming.Use filename as a parameter.   
 
 readonly REQUIRED_ARGUMENT_COUNT=4
+readonly VIDEO_SERVER_NAME=ams.library.nyu.edu
+SOURCE_DIR=/content/prod/rstar/content/tamwag/tam616/wip/se
+readonly M3U8=manifest.m3u8
+readonly F4M=manifest_rtmp.f4m
 
 print_error () {
     echo "ERROR: $@" >&2
