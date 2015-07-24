@@ -33,7 +33,7 @@ get_bitrate () {
 }
 
 delete_old_manifest () {
-    if [ -f $1 ]; then
+    if [[ -f $1 ]]; then
 	rm $1
     fi
 }
@@ -74,7 +74,7 @@ generate_f4m_manifest () {
 }
 
 #read and validate parameters
-if [ "$#" -ne ${REQUIRED_ARGUMENT_COUNT} ]; then
+if [[ "$#" -ne ${REQUIRED_ARGUMENT_COUNT} ]]; then
     print_error "incorrect argument count"
     print_usage
     exit 1
@@ -85,7 +85,7 @@ PARTNER_CODE="$3"
 COLLECTION_CODE="$4"
 APP_NAME="${PARTNER_CODE}_${COLLECTION_CODE}"
 
-if [ ! -d ${VIDEO_DIR} ]; then
+if [[ ! -d ${VIDEO_DIR} ]]; then
     echo "VIDEO_DIR:${VIDEO_DIR} doesn't exist." 
     exit 1
 fi
