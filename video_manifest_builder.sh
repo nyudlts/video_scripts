@@ -95,7 +95,7 @@ fi
 M3U8_MANIFEST=${VIDEO_DIR}/"${VIDEO_ID}"_"$M3U8"
 F4M_MANIFEST=${VIDEO_DIR}/"${VIDEO_ID}"_"$F4M"
 BASE_URL_HDS=rtmp://${VIDEO_SERVER_NAME}/${APP_NAME}
-BASE_URL_HLS=http://${VIDEO_SERVER_NAME}/hls_vod/${APP_NAME_HLS}
+BASE_URL_HLS=http://${VIDEO_SERVER_NAME}/hls-vod/${APP_NAME_HLS}
 
 #generate hls manifest file- extention u8m3
 delete_old_manifest ${M3U8_MANIFEST}
