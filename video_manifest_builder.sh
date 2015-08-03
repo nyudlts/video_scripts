@@ -50,7 +50,7 @@ generate_m3u8_manifest () {
 	br_i=$((1000*(${br%k}-32)))
 	echo "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=$br_i,RESOLUTION=$resolution">>${M3U8_MANIFEST}
 	echo "">>${M3U8_MANIFEST}
-	echo "/hls-vod/${APP_NAME}/$fr.m3u8">>${M3U8_MANIFEST}
+	echo "${BASE_URL_HLS}/$fr.m3u8">>${M3U8_MANIFEST}
 	echo "">>${M3U8_MANIFEST}
     done
 }
@@ -59,7 +59,7 @@ generate_f4m_manifest () {
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>">>${F4M_MANIFEST}
     echo "<manifest xmlns=\"http://ns.adobe.com/f4m/1.0\">">>${F4M_MANIFEST}
     echo "<id>${VIDEO_ID}</id>">>${F4M_MANIFEST}
-    echo "<baseURL>$BASE_URL_HDS</baseURL>">>${F4M_MANIFEST}
+    echo "<baseURL>${BASE_URL_HDS}</baseURL>">>${F4M_MANIFEST}
     echo "<mimeType>video/mp4</mimeType>">>${F4M_MANIFEST}
     for f in  ${VIDEO_DIR}/${VIDEO_ID}_*k_s.mp4
     do
@@ -84,6 +84,7 @@ VIDEO_DIR="$2"
 PARTNER_CODE="$3"
 COLLECTION_CODE="$4"
 APP_NAME="${PARTNER_CODE}_${COLLECTION_CODE}"
+APP_NAME_HLS="${PARTNER_CODE}/${COLLECTION_CODE}"
 
 if [[ ! -d ${VIDEO_DIR} ]]; then
     echo "VIDEO_DIR:${VIDEO_DIR} doesn't exist." 
@@ -93,7 +94,8 @@ fi
 #define variables 
 M3U8_MANIFEST=${VIDEO_DIR}/"${VIDEO_ID}"_"$M3U8"
 F4M_MANIFEST=${VIDEO_DIR}/"${VIDEO_ID}"_"$F4M"
-BASE_URL_HDS=rtmp://${VIDEO_SERVER_NAME}/hds_vod/${APP_NAME}
+BASE_URL_HDS=rtmp://${VIDEO_SERVER_NAME}/${APP_NAME}
+BASE_URL_HLS=http://${VIDEO_SERVER_NAME}/hls_vod/${APP_NAME_HLS}
 
 #generate hls manifest file- extention u8m3
 delete_old_manifest ${M3U8_MANIFEST}
