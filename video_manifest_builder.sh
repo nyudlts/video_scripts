@@ -40,7 +40,7 @@ delete_old_manifest () {
 
 generate_m3u8_manifest () {
     echo "#EXTM3U">>${M3U8_MANIFEST}
-    echo "#EXTINF:${VIDEO_ID}">>${M3U8_MANIFEST}
+    echo "#VIDEO_ID:${VIDEO_ID}">>${M3U8_MANIFEST}
     echo ''>>${M3U8_MANIFEST}
     for f in  ${VIDEO_DIR}/${VIDEO_ID}_*k_mobile_s.mp4
     do
