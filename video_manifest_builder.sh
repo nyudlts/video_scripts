@@ -101,7 +101,7 @@ BASE_URL_HLS=http://${VIDEO_SERVER_NAME}/hls-vod/${APP_NAME_HLS}
 delete_old_manifest ${M3U8_MANIFEST}
 generate_m3u8_manifest
 
-#generates hds manifest file - extention m4p
+#generates hds manifest file - extention f4m 
 delete_old_manifest ${F4M_MANIFEST}
 generate_f4m_manifest
 
