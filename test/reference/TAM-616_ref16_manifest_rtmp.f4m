@@ -3,7 +3,7 @@
 <id>TAM-616_ref16</id>
 <baseURL>rtmp://ams.library.nyu.edu/tamwag_tam616</baseURL>
 <mimeType>video/mp4</mimeType>
-<media href="mp4:TAM-616_ref16_1520k_s" width="640" height="480" bitrate="1520"/>
-<media href="mp4:TAM-616_ref16_416k_s" width="472" height="354" bitrate="416"/>
-<media href="mp4:TAM-616_ref16_720k_s" width="640" height="480" bitrate="720"/>
+<media url="mp4:TAM-616_ref16_1520k_s" width="640" height="480" bitrate="1520"/>
+<media url="mp4:TAM-616_ref16_416k_s" width="472" height="354" bitrate="416"/>
+<media url="mp4:TAM-616_ref16_720k_s" width="640" height="480" bitrate="720"/>
 </manifest>

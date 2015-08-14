@@ -68,7 +68,7 @@ generate_f4m_manifest () {
 	width=$(get_param $f "ImageWidth")
 	height=$(get_param $f "ImageHeight")
 	br_i=$((${br%k}))
-	echo "<media href=\"mp4:${fr%.mp4}\" width=\"$width\" height=\"$height\" bitrate=\"$br_i\"/>">>${F4M_MANIFEST}
+	echo "<media url=\"mp4:${fr%.mp4}\" width=\"$width\" height=\"$height\" bitrate=\"$br_i\"/>">>${F4M_MANIFEST}
     done
     echo "</manifest>">>${F4M_MANIFEST}
 }
