@@ -2,7 +2,7 @@
 #
 # $Id$
 #
-# Wrapper script for video_manifest_builder.sh 
+# Wrapper script for media_manifest_builder.sh 
 #
 #------------------------------------------------------------------------------
 global_status=0
@@ -12,7 +12,6 @@ SCRIPT_DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$SCRIPT_DIR" ]]; then SCRIPT_DIR="$PWD"; fi
 
 readonly CONFIG_FILE="${SCRIPT_DIR}/builder_config.cfg"
-readonly MANIFEST_SCRIPT="${SCRIPT_DIR}/video_manifest_builder.sh"
 
 echo "Reading config...." >&2
          
@@ -26,25 +25,32 @@ source "${CONFIG_FILE}"
 if [[ ! -d "${SOURCE_DIR}" ]]; then
  echo "SOURCE_DIR:${SOURCE_DIR} doesn't exist."  
  exit 1
-fi  
+fi
+  
+MANIFEST_SCRIPT="${SCRIPT_DIR}/${SCRIPT_NAME}"
 
-declare -a VIDEOS
+if [[ ! -f "${MANIFEST_SCRIPT}" ]]; then
+ echo "MANIFEST_SCRIPT:${MANIFEST_SCRIPT} doesn't exist."
+ exit 1
+fi
+ 
+declare -a MEDIA
 
 if [[ $# -gt 0 ]]; then
         if [[ ! -f "$1" ]]; then
            echo "file $1 doesn't exist. Please check your path "
            exit 1
         fi
-	readarray -t VIDEOS < $1
+	readarray -t MEDIA < $1
 else
-	VIDEOS=($(ls "$SOURCE_DIR" | sort))
+	MEDIA=($(ls "$SOURCE_DIR" | sort))
 fi
 
-for video in "${VIDEOS[@]}"
+for media in "${MEDIA[@]}"
 do
-	printf "Processing ${video} : "
-	video_dir="${SOURCE_DIR}/${video}/${VIDEO_SUB_DIR}"
-	${MANIFEST_SCRIPT} "${video}" "${video_dir}" "${PARTNER_CODE}" "${COLLECTION_CODE}"
+	printf "Processing ${media} : "
+	media_dir="${SOURCE_DIR}/${media}/${MEDIA_SUB_DIR}"
+	${MANIFEST_SCRIPT} "${media}" "${media_dir}" "${PARTNER_CODE}" "${COLLECTION_CODE}"
 	retval=$?
 	if [[ "${retval}" -eq 0 ]]; then
 		status='PASS'
