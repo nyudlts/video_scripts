@@ -1,0 +1,7 @@
+#EXTM3U
+#AUDIO_ID:326_1019_000002
+
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=100000
+
+http://ams.library.nyu.edu/hls-vod/audio-only-aac/fales/mss326/326_1019_000002_s.m4a.m3u8
+
