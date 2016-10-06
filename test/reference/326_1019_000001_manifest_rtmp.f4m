@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://ns.adobe.com/f4m/1.0">
+<id>326_1019_000001</id>
+<baseURL>rtmp://ams.library.nyu.edu/fales_mss326</baseURL>
+<mimeType>audio/mp4</mimeType>
+<media url="mp4:326_1019_000001_s.m4a" />
+</manifest>
