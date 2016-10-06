@@ -58,6 +58,12 @@ generate_f4m_manifest () {
     echo "</manifest>">>${F4M_MANIFEST}
 }
 
+#check that we are on Linux (it won't work on Mac)
+if [[ $(uname) != 'Linux' ]]; then
+    echo "ERROR: script only supported on Linux" >&2
+    exit 1
+fi
+
 #read and validate parameters
 if [[ "$#" -ne ${REQUIRED_ARGUMENT_COUNT} ]]; then
     print_error "incorrect argument count"
