@@ -1,6 +1,8 @@
 #!/bin/bash
 
-## The script is used to generate manifest files for dynamic streaming of DLTS audio. generates manifest files for hls (mobile) and hds streaming.Use filename as a parameter.   
+## The script is used to generate manifest files for dynamic streaming
+## of DLTS audio. generates manifest files for hls (mobile) and hds
+## streaming.Use filename as a parameter.
 
 readonly REQUIRED_ARGUMENT_COUNT=4
 readonly AUDIO_SERVER_NAME=ams.library.nyu.edu
@@ -13,7 +15,7 @@ print_error () {
 
 print_usage () {
     echo "usage: $0 <audio id> <audio dir> <partner code> <collection code>"
-    echo " e.g.: $0 326_1019 /content/prod/rstar/content/fales/mss326/wip/se/ fales mss326"
+    echo " e.g.: $0 326_1019 /content/prod/rstar/content/fales/mss326/wip/se/326_1019/aux fales mss326"
 }
 
 #read and check parameters
@@ -28,8 +30,8 @@ get_file_name () {
 }
 
 get_audio_name () {
-   local audio_name=$(basename "$1")
-   echo "${audio_name%_s.m4a}"
+    local audio_name=$(basename "$1")
+    echo "${audio_name%_s.m4a}"
 }
 
 delete_old_manifest () {
@@ -81,7 +83,7 @@ if [[ ! -d ${AUDIO_DIR} ]]; then
     echo "AUDIO_DIR:${AUDIO_DIR} doesn\'t exist." 
     exit 1
 fi
-    echo "AUDIO_DIR:${AUDIO_DIR}" 
+echo "AUDIO_DIR:${AUDIO_DIR}" 
 
 #define variables 
 BASE_URL_HDS=rtmp://${AUDIO_SERVER_NAME}/${APP_NAME}
@@ -90,6 +92,17 @@ BASE_URL_HLS=http://${AUDIO_SERVER_NAME}/hls-vod/audio-only-aac/${APP_NAME_HLS}
 #iterate over audio files in the directory
 for f in  ${AUDIO_DIR}/*_s.m4a
 do
+    # add test to check if file exists. If script is called on a directory with
+    # no matching files, Bash sets the loop variable to the glob string
+    # e.g., /home/dlib/pawletko/dev/video_scripts/test/fixtures/fales/mss326/wip/se/*_s.m4a
+    # this is problematic, because the script then tries to create manifests for file "*"
+    #
+    # see: http://unix.stackexchange.com/questions/239772/bash-iterate-file-list-except-when-empty
+    if [[ ! -f "$f" ]]; then
+	print_error "$f not found"
+	break
+    fi
+
     fr=$(get_file_name "$f")
     a_name=$(get_audio_name "$fr") 
     #define variables
