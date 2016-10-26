@@ -100,7 +100,7 @@ do
     # see: http://unix.stackexchange.com/questions/239772/bash-iterate-file-list-except-when-empty
     if [[ ! -f "$f" ]]; then
 	print_error "$f not found"
-	break
+	exit 1
     fi
 
     fr=$(get_file_name "$f")
