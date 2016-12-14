@@ -1,6 +1,8 @@
 #!/bin/bash
 
-## The script is used to generate manifest files for dynamic streaming of DLTS video. generates manifest files for hls (mobile) and hds streaming.Use filename as a parameter.   
+## The script is used to generate manifest files for dynamic streaming
+## of DLTS video. generates manifest files for hls (mobile) and hds
+## streaming.Use filename as a parameter.
 
 readonly REQUIRED_ARGUMENT_COUNT=4
 readonly VIDEO_SERVER_NAME=ams.library.nyu.edu
@@ -12,8 +14,9 @@ print_error () {
 }
 
 print_usage () {
-    echo "usage: $0 <video id> <video dir> <partner code> <collection code>"
+    echo "usage: $0 <video file prefix> <streaming file dir> <partner code> <collection code>"
     echo " e.g.: $0 231_0710 /content/prod/rstar/content/fales/gcn/wip/se/231_0710/aux fales gcn"
+    echo " e.g.: $0 AD-MC023_ref1_A /content/prod/rstar/content/nyuad/ad_mc023/wip/se/AD-MC023_ref1/aux nyuad ad_mc023"
 }
 
 #read and check parameters
@@ -27,8 +30,27 @@ get_file_name () {
     echo "$file_name"
 }
 
+# need to deal with filenames with different numbers of leading underscores,
+# e.g., 
+#   TAM-616_ref100_142k_mobile_s.mp4
+#   AD-MC023_ref1_A_1232k_mobile_s.mp4
+# 
+# to compensate for this variability, the string is reversed, parsed,
+# then reversed back
+get_bitrate_mobile () {
+    local bitrate=$( echo $1 | rev | cut -d'_' -f3 | rev )
+    echo "$bitrate"
+}
+
+# need to deal with filenames with different numbers of leading underscores,
+# e.g., 
+#   TAM-616_ref100_1520k_s.mp4
+#   AD-MC023_ref1_A_1520k_s.mp4
+# 
+# to compensate for this variability, the string is reversed, parsed,
+# then reversed back
 get_bitrate () {
-    local bitrate=$(echo $1 | awk -F_ '{ print $3 }')
+    local bitrate=$( echo $1 | rev | cut -d'_' -f2 | rev )
     echo "$bitrate"
 }
 
@@ -45,7 +67,7 @@ generate_m3u8_manifest () {
     for f in  ${VIDEO_DIR}/${VIDEO_ID}_*k_mobile_s.mp4
     do
 	fr=$(get_file_name "$f")
-	br=$(get_bitrate "$fr")
+	br=$(get_bitrate_mobile "$fr")
 	resolution=$(get_param $f "ImageHeight")x$(get_param $f "ImageWidth")
 	br_i=$((1000*(${br%k}-32)))
 	echo "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=$br_i,RESOLUTION=$resolution">>${M3U8_MANIFEST}
