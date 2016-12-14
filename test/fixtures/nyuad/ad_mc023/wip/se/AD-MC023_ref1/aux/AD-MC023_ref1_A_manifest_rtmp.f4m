@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://ns.adobe.com/f4m/1.0">
+<id>AD-MC023_ref1_A</id>
+<baseURL>rtmp://ams.library.nyu.edu/nyuad_ad_mc023</baseURL>
+<mimeType>video/mp4</mimeType>
+<media url="mp4:AD-MC023_ref1_A_1520k_s" width="853" height="480" bitrate="1520"/>
+<media url="mp4:AD-MC023_ref1_A_3532k_s" width="1280" height="720" bitrate="3532"/>
+<media url="mp4:AD-MC023_ref1_A_416k_s" width="629" height="354" bitrate="416"/>
+<media url="mp4:AD-MC023_ref1_A_5032k_s" width="1920" height="1080" bitrate="5032"/>
+<media url="mp4:AD-MC023_ref1_A_720k_s" width="853" height="480" bitrate="720"/>
+</manifest>
