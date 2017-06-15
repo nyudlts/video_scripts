@@ -30,14 +30,6 @@ get_file_name () {
     echo "$file_name"
 }
 
-#if for whatever reason bitrate wasn't parsed as positive integer give an error
-check_bitrate () {
-if [[ $1 <= 0 ]]; then
-    echo "ERROR: bitrate ${1} for the file ${2} wasn't parsed correctly parsed or filename is formatted wrongly" >&2
-    exit 1
-fi
-}
-
 # need to deal with filenames with different numbers of leading underscores,
 # e.g., 
 #   TAM-616_ref100_142k_mobile_s.mp4
@@ -48,7 +40,6 @@ fi
 get_bitrate_mobile () {
     local bitrate=$( echo $1 | rev | cut -d'_' -f3 | rev )
     echo "$bitrate"
-    check_bitrate ${bitrate} $1 
 }
 
 # need to deal with filenames with different numbers of leading underscores,
@@ -61,7 +52,17 @@ get_bitrate_mobile () {
 get_bitrate () {
     local bitrate=$( echo $1 | rev | cut -d'_' -f2 | rev )
     echo "$bitrate"
-    check_bitrate ${bitrate} $1 
+}
+
+#if for whatever reason bitrate wasn't parsed as positive integer give an error
+check_bitrate () {
+   if [[ 0 -gt $1 ]]; then
+       echo "ERROR: bitrate ${1} for the file ${2} wasn't parsed correctly parsed or filename is formatted wrongly" >&2
+       retval=1 
+   else
+       retval=0
+   fi
+   return "$retval"
 }
 
 delete_old_manifest () {
@@ -80,6 +81,11 @@ generate_m3u8_manifest () {
 	br=$(get_bitrate_mobile "$fr")
 	resolution=$(get_param $f "ImageHeight")x$(get_param $f "ImageWidth")
 	br_i=$((1000*(${br%k}-32)))
+        $(check_bitrate ${br_i} ${fr})
+        retval=$?
+        if [[ "$retval" == 1 ]]; then
+           exit 1
+        fi 
 	echo "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=$br_i,RESOLUTION=$resolution">>${M3U8_MANIFEST}
 	echo "">>${M3U8_MANIFEST}
 	echo "${BASE_URL_HLS}/$fr.m3u8">>${M3U8_MANIFEST}
@@ -100,6 +106,11 @@ generate_f4m_manifest () {
 	width=$(get_param $f "ImageWidth")
 	height=$(get_param $f "ImageHeight")
 	br_i=$((${br%k}))
+        $(check_bitrate ${br_i} ${fr})
+        retval=$?
+        if [[ "$retval" == 1 ]]; then
+           exit 1
+        fi 
 	echo "<media url=\"mp4:${fr%.mp4}\" width=\"$width\" height=\"$height\" bitrate=\"$br_i\"/>">>${F4M_MANIFEST}
     done
     echo "</manifest>">>${F4M_MANIFEST}
