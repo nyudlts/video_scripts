@@ -30,6 +30,14 @@ get_file_name () {
     echo "$file_name"
 }
 
+#if for whatever reason bitrate wasn't parsed as positive integer give an error
+check_bitrate () {
+if [[ $1 <= 0 ]]; then
+    echo "ERROR: bitrate ${1} for the file ${2} wasn't parsed correctly parsed or filename is formatted wrongly" >&2
+    exit 1
+fi
+}
+
 # need to deal with filenames with different numbers of leading underscores,
 # e.g., 
 #   TAM-616_ref100_142k_mobile_s.mp4
@@ -40,6 +48,7 @@ get_file_name () {
 get_bitrate_mobile () {
     local bitrate=$( echo $1 | rev | cut -d'_' -f3 | rev )
     echo "$bitrate"
+    check_bitrate ${bitrate} $1 
 }
 
 # need to deal with filenames with different numbers of leading underscores,
@@ -52,6 +61,7 @@ get_bitrate_mobile () {
 get_bitrate () {
     local bitrate=$( echo $1 | rev | cut -d'_' -f2 | rev )
     echo "$bitrate"
+    check_bitrate ${bitrate} $1 
 }
 
 delete_old_manifest () {
