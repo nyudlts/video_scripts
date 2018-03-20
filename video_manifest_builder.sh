@@ -1,13 +1,13 @@
 #!/bin/bash
 
 ## The script is used to generate manifest files for dynamic streaming
-## of DLTS video. generates manifest files for hls (mobile) and hds
-## streaming.Use filename as a parameter.
+## of DLTS video. generates manifest files for hls streaming.
+## Use filename as a parameter.
 
 readonly REQUIRED_ARGUMENT_COUNT=4
 readonly VIDEO_SERVER_NAME=ams.library.nyu.edu
 readonly M3U8=manifest.m3u8
-readonly F4M=manifest_rtmp.f4m
+readonly CFG=/content/prod/rstar/bin/exiftool-cfg/cfg/exiftool-v0.1.0.cfg  # adds large file support
 
 print_error () {
     echo "ERROR: $@" >&2
@@ -21,25 +21,13 @@ print_usage () {
 
 #read and check parameters
 get_param () {
-    local param=$(exiftool -"$2" -b -n "$1")
+    local param=$(exiftool -config "$CFG" -"$2" -b -n "$1")
     echo "$param"
 }
 
 get_file_name () {
     local file_name=$(basename "$1")
     echo "$file_name"
-}
-
-# need to deal with filenames with different numbers of leading underscores,
-# e.g., 
-#   TAM-616_ref100_142k_mobile_s.mp4
-#   AD-MC023_ref1_A_1232k_mobile_s.mp4
-# 
-# to compensate for this variability, the string is reversed, parsed,
-# then reversed back
-get_bitrate_mobile () {
-    local bitrate=$( echo $1 | rev | cut -d'_' -f3 | rev )
-    echo "$bitrate"
 }
 
 # need to deal with filenames with different numbers of leading underscores,
@@ -75,10 +63,10 @@ generate_m3u8_manifest () {
     echo "#EXTM3U">>${M3U8_MANIFEST}
     echo "#VIDEO_ID:${VIDEO_ID}">>${M3U8_MANIFEST}
     echo ''>>${M3U8_MANIFEST}
-    for f in  ${VIDEO_DIR}/${VIDEO_ID}_*k_mobile_s.mp4
+    for f in  ${VIDEO_DIR}/${VIDEO_ID}_*k_s.mp4
     do
 	fr=$(get_file_name "$f")
-	br=$(get_bitrate_mobile "$fr")
+	br=$(get_bitrate "$fr")
 	resolution=$(get_param $f "ImageHeight")x$(get_param $f "ImageWidth")
 	br_i=$((1000*(${br%k}-32)))
         $(check_bitrate ${br_i} ${fr})
@@ -93,28 +81,6 @@ generate_m3u8_manifest () {
     done
 }
 
-generate_f4m_manifest () {
-    echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>">>${F4M_MANIFEST}
-    echo "<manifest xmlns=\"http://ns.adobe.com/f4m/1.0\">">>${F4M_MANIFEST}
-    echo "<id>${VIDEO_ID}</id>">>${F4M_MANIFEST}
-    echo "<baseURL>${BASE_URL_HDS}</baseURL>">>${F4M_MANIFEST}
-    echo "<mimeType>video/mp4</mimeType>">>${F4M_MANIFEST}
-    for f in  ${VIDEO_DIR}/${VIDEO_ID}_*k_s.mp4
-    do
-	fr=$(get_file_name "$f")
-	br=$(get_bitrate "$fr")
-	width=$(get_param $f "ImageWidth")
-	height=$(get_param $f "ImageHeight")
-	br_i=$((${br%k}))
-        $(check_bitrate ${br_i} ${fr})
-        retval=$?
-        if [[ "$retval" == 1 ]]; then
-           exit 1
-        fi 
-	echo "<media url=\"mp4:${fr%.mp4}\" width=\"$width\" height=\"$height\" bitrate=\"$br_i\"/>">>${F4M_MANIFEST}
-    done
-    echo "</manifest>">>${F4M_MANIFEST}
-}
 
 #check that we are on Linux (it won't work on Mac)
 if [[ $(uname) != 'Linux' ]]; then
@@ -140,17 +106,11 @@ if [[ ! -d ${VIDEO_DIR} ]]; then
     exit 1
 fi
 
-#define variables 
+# define variables 
 M3U8_MANIFEST=${VIDEO_DIR}/"${VIDEO_ID}"_"$M3U8"
-F4M_MANIFEST=${VIDEO_DIR}/"${VIDEO_ID}"_"$F4M"
 BASE_URL_HDS=rtmp://${VIDEO_SERVER_NAME}/${APP_NAME}
 BASE_URL_HLS=http://${VIDEO_SERVER_NAME}/hls-vod/${APP_NAME_HLS}
 
-#generate hls manifest file- extention u8m3
+# generate hls manifest file- extention m3u8
 delete_old_manifest ${M3U8_MANIFEST}
 generate_m3u8_manifest
-
-#generates hds manifest file - extention f4m 
-delete_old_manifest ${F4M_MANIFEST}
-generate_f4m_manifest
-
