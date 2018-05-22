@@ -108,7 +108,6 @@ fi
 
 # define variables 
 M3U8_MANIFEST=${VIDEO_DIR}/"${VIDEO_ID}"_"$M3U8"
-BASE_URL_HDS=rtmp://${VIDEO_SERVER_NAME}/${APP_NAME}
 BASE_URL_HLS=http://${VIDEO_SERVER_NAME}/hls-vod/${APP_NAME_HLS}
 
 # generate hls manifest file- extention m3u8
