@@ -5,7 +5,7 @@
 ## streaming.Use filename as a parameter.
 
 readonly REQUIRED_ARGUMENT_COUNT=4
-readonly AUDIO_SERVER_NAME=ams.library.nyu.edu
+readonly AUDIO_SERVER_NAME=stream.dlib.nyu.edu
 readonly M3U8=manifest.m3u8
 readonly F4M=manifest_rtmp.f4m
 
