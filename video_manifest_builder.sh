@@ -5,7 +5,7 @@
 ## Use filename as a parameter.
 
 readonly REQUIRED_ARGUMENT_COUNT=4
-readonly VIDEO_SERVER_NAME=ams.library.nyu.edu
+readonly VIDEO_SERVER_NAME=stream.dlib.nyu.edu
 readonly M3U8=manifest.m3u8
 readonly CFG=/content/prod/rstar/bin/exiftool-cfg/cfg/exiftool-v0.1.0.cfg  # adds large file support
 
@@ -108,7 +108,6 @@ fi
 
 # define variables 
 M3U8_MANIFEST=${VIDEO_DIR}/"${VIDEO_ID}"_"$M3U8"
-BASE_URL_HDS=rtmp://${VIDEO_SERVER_NAME}/${APP_NAME}
 BASE_URL_HLS=http://${VIDEO_SERVER_NAME}/hls-vod/${APP_NAME_HLS}
 
 # generate hls manifest file- extention m3u8

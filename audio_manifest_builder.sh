@@ -5,9 +5,8 @@
 ## streaming.Use filename as a parameter.
 
 readonly REQUIRED_ARGUMENT_COUNT=4
-readonly AUDIO_SERVER_NAME=ams.library.nyu.edu
+readonly AUDIO_SERVER_NAME=stream.dlib.nyu.edu
 readonly M3U8=manifest.m3u8
-readonly F4M=manifest_rtmp.f4m
 
 print_error () {
     echo "ERROR: $@" >&2
@@ -50,16 +49,6 @@ generate_m3u8_manifest ()  {
     echo "">>${M3U8_MANIFEST}
 }
 
-generate_f4m_manifest () {
-    echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>">>${F4M_MANIFEST}
-    echo "<manifest xmlns=\"http://ns.adobe.com/f4m/1.0\">">>${F4M_MANIFEST}
-    echo "<id>$2</id>">>${F4M_MANIFEST}
-    echo "<baseURL>${BASE_URL_HDS}</baseURL>">>${F4M_MANIFEST}
-    echo "<mimeType>audio/mp4</mimeType>">>${F4M_MANIFEST}
-    echo "<media url=\"mp4:$1\" />">>${F4M_MANIFEST}
-    echo "</manifest>">>${F4M_MANIFEST}
-}
-
 #check that we are on Linux (it won't work on Mac)
 if [[ $(uname) != 'Linux' ]]; then
     echo "ERROR: script only supported on Linux" >&2
@@ -86,7 +75,6 @@ fi
 echo "AUDIO_DIR:${AUDIO_DIR}" 
 
 #define variables 
-BASE_URL_HDS=rtmp://${AUDIO_SERVER_NAME}/${APP_NAME}
 BASE_URL_HLS=http://${AUDIO_SERVER_NAME}/hls-vod/audio-only-aac/${APP_NAME_HLS}
 
 #iterate over audio files in the directory
@@ -107,11 +95,7 @@ do
     a_name=$(get_audio_name "$fr") 
     #define variables
     M3U8_MANIFEST=${AUDIO_DIR}/"$a_name"_"$M3U8"
-    F4M_MANIFEST=${AUDIO_DIR}/"$a_name"_"$F4M"
     #generate hls manifest file- extention u8m3
     delete_old_manifest ${M3U8_MANIFEST}
     generate_m3u8_manifest "$fr" "$a_name"
-    #generates hds manifest file - extention f4m 
-    delete_old_manifest ${F4M_MANIFEST}
-    generate_f4m_manifest "$fr" "$a_name"
 done
