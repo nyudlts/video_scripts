@@ -75,7 +75,7 @@ fi
 echo "AUDIO_DIR:${AUDIO_DIR}" 
 
 #define variables 
-BASE_URL_HLS=http://${AUDIO_SERVER_NAME}/hls-vod/audio-only-aac/${APP_NAME_HLS}
+BASE_URL_HLS=http://${AUDIO_SERVER_NAME}/hls-vod/audio-only/${APP_NAME_HLS}
 
 #iterate over audio files in the directory
 for f in  ${AUDIO_DIR}/*_s.m4a
