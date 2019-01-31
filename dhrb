@@ -1,0 +1,131 @@
+#!/bin/bash
+
+set -u
+
+# This script is meant to be run on HIDVL video objects in the R* repository
+# the script assumes the standard "wip" directory structure
+#   foo/
+#       aux/
+#       data/6465441_marcxml.xml
+#       data/6465441_mods.xml
+#       data/foo_m.mov
+#       handle
+#
+# the script outputs the following information:
+# <digitization id>,<handle URL>,<runtime>,<BSN>
+#
+# foo,http://hdl.handle.net/2333.1/foo,00:00:05.015,6465441
+#
+# this is initially designed for HIDVL objects.
+err_exit() {
+    exit 1
+}
+
+print_usage() {
+    echo "usage: $0 <path to HIDVL WIP>"
+    echo "       e.g., "
+    echo "       $0 fasdlkf"
+    echo "       $0 /path/to/wip/root/fasdlkf"
+}
+
+MEDIAINFO=$(which mediainfo 2>/dev/null)
+if [[ "$?" != 0 ]]; then
+    echo "ERROR: mediainfo not found" >&2
+    err_exit
+fi
+
+init_runtime() {
+    runtime=$($MEDIAINFO -f ${wip_path}/data/*.mov | grep uration | head -5 | tail -1 | cut -d':' -f2- | sed -e 's/ //')
+}
+
+init_handle() {
+    handle="http://hdl.handle.net/$(cat $wip_path/handle)"
+}
+
+init_digi_id() {
+    digi_id=$(basename $wip_path)
+}
+
+init_bsn() {
+    local marcxml_path
+    local marcxml
+
+    marcxml_path=$(ls -1 ${wip_path}/data/*_marcxml.xml | head -1)
+    marcxml=$(basename $marcxml_path)
+    bsn=$(echo $marcxml | rev | cut -d'_' -f2 | rev)
+}
+
+
+assert_dir() {
+    if [[ ! -d "$1" ]]; then
+	echo "ERROR: $1 must be a directory"
+	print_usage
+	err_exit
+    fi
+}
+
+
+assert_handle() {
+    if [[ ! -f "${wip_path}/handle" ]]; then
+	echo "ERROR: handle file missing"
+	err_exit
+    fi
+}
+	
+# assert that there is at least one .mov file in WIP
+assert_mov() {
+    (ls -1 ${wip_path}/data/*.mov &>/dev/null)
+    if [[ "$?" != 0 ]]; then
+	echo "ERROR: no .mov files found in ${wip_path}/data" >&2
+	err_exit
+    fi
+}
+
+# assert that there is one _marcxml.xml file in WIP
+assert_marcxml() {
+    local file_list
+    local file_count
+
+    file_list=$(ls -1 ${wip_path}/data/*_marcxml.xml 2>/dev/null)
+    if [[ "$?" != 0 ]]; then
+	echo "ERROR: no _marcxml.xml files found in ${wip_path}/data" >&2
+	err_exit
+    fi
+
+    if [[ $(echo "$file_list" | wc -l) -ne 1 ]]; then
+	echo "ERROR: too many _marcxml.xml files found in ${wip_path}/data" >&2
+	err_exit
+    fi
+}
+
+
+main() {
+
+    if [[ "$#" -ne 1 ]]; then
+	echo "ERROR: incorrect argument count"
+	print_usage
+	err_exit
+    fi
+
+    wip_path="$1"
+
+    assert_dir "$wip_path"
+    assert_handle
+    assert_mov
+    assert_marcxml
+
+    digi_id=''
+    handle=''
+    runtime=''
+    bsn=''
+
+    init_digi_id
+    init_handle
+    init_runtime
+    init_bsn
+
+    echo "${digi_id},${handle},${runtime},${bsn}"
+    exit 0
+}
+
+main "$@"
