@@ -108,7 +108,7 @@ fi
 
 # define variables 
 M3U8_MANIFEST=${VIDEO_DIR}/"${VIDEO_ID}"_"$M3U8"
-BASE_URL_HLS=http://${VIDEO_SERVER_NAME}/hls-vod/${APP_NAME_HLS}
+BASE_URL_HLS=https://${VIDEO_SERVER_NAME}/hls-vod/${APP_NAME_HLS}
 
 # generate hls manifest file- extention m3u8
 delete_old_manifest ${M3U8_MANIFEST}
