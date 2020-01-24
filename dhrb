@@ -2,6 +2,7 @@
 
 set -u
 
+VIDEO_EXTENSION=""
 # This script is meant to be run on HIDVL video objects in the R* repository
 # the script assumes the standard "wip" directory structure
 #   foo/
@@ -35,7 +36,7 @@ if [[ "$?" != 0 ]]; then
 fi
 
 init_runtime() {
-    runtime=$($MEDIAINFO -f ${wip_path}/data/*.mov | grep uration | head -5 | tail -1 | cut -d':' -f2- | sed -e 's/ //')
+    runtime=$($MEDIAINFO -f ${wip_path}/data/*.${VIDEO_EXTENSION} | grep uration | head -5 | tail -1 | cut -d':' -f2- | sed -e 's/ //')
 }
 
 init_handle() {
@@ -73,10 +74,20 @@ assert_handle() {
 }
 	
 # assert that there is at least one .mov file in WIP
-assert_mov() {
+init_video_extension() {
+    VIDEO_EXTENSION=""
     (ls -1 ${wip_path}/data/*.mov &>/dev/null)
-    if [[ "$?" != 0 ]]; then
-	echo "ERROR: no .mov files found in ${wip_path}/data" >&2
+    if [[ "$?" == 0 ]]; then
+	VIDEO_EXTENSION="mov"
+    fi
+
+    (ls -1 ${wip_path}/data/*.mp4 &>/dev/null)
+    if [[ "$?" == 0 ]]; then
+	VIDEO_EXTENSION="mp4"
+    fi
+
+    if [[ "$VIDEO_EXTENSION" == "" ]]; then
+	echo "ERROR: no video (.mov, .mp4) files found in ${wip_path}/data" >&2
 	err_exit
     fi
 }
@@ -111,7 +122,7 @@ main() {
 
     assert_dir "$wip_path"
     assert_handle
-    assert_mov
+    init_video_extension
     assert_marcxml
 
     digi_id=''
