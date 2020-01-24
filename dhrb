@@ -87,7 +87,7 @@ init_video_extension() {
     fi
 
     if [[ "$VIDEO_EXTENSION" == "" ]]; then
-	echo "ERROR: no .mov files found in ${wip_path}/data" >&2
+	echo "ERROR: no video (.mov, .mp4) files found in ${wip_path}/data" >&2
 	err_exit
     fi
 }
