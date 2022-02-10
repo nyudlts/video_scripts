@@ -3,6 +3,8 @@
 set -u
 
 VIDEO_EXTENSION=""
+# nhrb = NOID, Handle, Runtime, BSN
+#
 # This script is meant to be run on HIDVL video objects in the R* repository
 # the script assumes the standard "wip" directory structure
 #   foo/
@@ -27,6 +29,9 @@ print_usage() {
     echo "       e.g., "
     echo "       $0 fasdlkf"
     echo "       $0 /path/to/wip/root/fasdlkf"
+    echo "  "
+    echo "CSV header:"
+    echo "noid,handle,duration (hh:mm:ss.msec),bsn"
 }
 
 MEDIAINFO=$(which mediainfo 2>/dev/null)
@@ -40,7 +45,7 @@ init_runtime() {
 }
 
 init_handle() {
-    handle="http://hdl.handle.net/$(cat $wip_path/handle)"
+    handle="https://hdl.handle.net/$(cat $wip_path/handle)"
 }
 
 init_digi_id() {
